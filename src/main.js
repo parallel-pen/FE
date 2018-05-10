@@ -3,9 +3,9 @@
 import Vue from 'vue';
 import iView from 'iview';
 import 'iview/dist/styles/iview.css';
+import '@/assets/themes/light.less';
 import App from './App';
 import router from './router';
-import './themes/light.less';
 
 Vue.use(iView);
 
