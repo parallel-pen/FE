@@ -23,12 +23,13 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style scoped lang="scss">
 .index {
   font-size: 1.5em;
-  max-width: 768px;
+  @media (min-width: 768px) { width: 500px; }
+  @media (min-width: 992px) { width: 700px; }
   margin: 0 auto;
-  text-align: justify;
+  line-height: 1.8;
 }
 
 </style>

@@ -1,5 +1,9 @@
 <template>
 <div id="app">
+  <Login
+    :value="isLoginShow"
+    @toggleShow="toggleLoginShow"
+  />
   <Layout>
     <Header>
       <Row>
@@ -16,20 +20,14 @@
           :lg="4"
         >
           <div class="log-button">
-            <Button type="text">登陆</Button>
-            <Button type="ghost">开始使用</Button>
+            <Button type="ghost" @click="toggleLoginShow(true)">登录 / 注册</Button>
           </div>
         </Col>
       </Row>
     </Header>
     <Content>
       <Row>
-        <Col
-          :xs="{ span: 22, offset: 1}"
-          :sm="{ span: 16, offset: 4}"
-          :md="{ span: 14, offset: 5}"
-          :lg="{ span: 12, offset: 6}"
-        >
+        <Col :span="22" :offset="1">
           <router-view/>
         </Col>
       </Row>
@@ -40,16 +38,24 @@
 </template>
 
 <script>
+import Login from '@/components/Login';
 export default {
   name: 'App',
-  // components: {
-  //   UserMenu,
-  // },
+  data() {
+    return {
+      isLoginShow: false,
+    };
+  },
+  components: {
+    Login,
+  },
   computed: {
 
   },
   methods: {
-
+    toggleLoginShow(isShow) {
+      this.isLoginShow = !!isShow;
+    }
   },
 };
 </script>
