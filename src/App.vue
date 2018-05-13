@@ -3,6 +3,7 @@
   <Login
     :value="isLoginShow"
     @toggleShow="toggleLoginShow"
+    @login="login(true)"
   />
   <Layout>
     <Header>
@@ -19,8 +20,15 @@
           :md="6"
           :lg="4"
         >
-          <div class="log-button">
-            <Button type="ghost" @click="toggleLoginShow(true)">登录 / 注册</Button>
+          <div v-if="isLoged" class="log-button">
+            <Button type="text" @click="login(false)">
+              退出登录
+            </Button>
+          </div>
+          <div v-else class="log-button">
+            <Button type="ghost" @click="toggleLoginShow(true)">
+              登录 / 注册
+            </Button>
           </div>
         </Col>
       </Row>
@@ -44,6 +52,7 @@ export default {
   data() {
     return {
       isLoginShow: false,
+      isLoged: false,
     };
   },
   components: {
@@ -55,6 +64,9 @@ export default {
   methods: {
     toggleLoginShow(isShow) {
       this.isLoginShow = !!isShow;
+    },
+    login(state) {
+      this.isLoged = state;
     }
   },
 };
