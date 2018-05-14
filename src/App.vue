@@ -34,11 +34,13 @@
       </Row>
     </Header>
     <Content>
-      <Row>
-        <Col :span="22" :offset="1">
-          <router-view/>
-        </Col>
-      </Row>
+      <!-- <Row>
+        <Col :span="22" :offset="1"> -->
+          <div class="content">
+            <router-view/>
+          </div>
+        <!-- </Col>
+      </Row> -->
     </Content>
     <Footer>
       <div class="footer">
@@ -97,5 +99,9 @@ export default {
 .footer {
   text-align: center;
   line-height: 1.8;
+}
+.content {
+  padding: 20px 10px;
+  min-height: 80vh
 }
 </style>
