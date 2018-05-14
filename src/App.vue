@@ -40,7 +40,12 @@
         </Col>
       </Row>
     </Content>
-    <Footer>Footer</Footer>
+    <Footer>
+      <div class="footer">
+        <p>Copyright © 2018</p>
+        <p>CUC DMA.All Rights Reserved</p>
+      </div>
+    </Footer>
   </Layout>
 </div>
 </template>
@@ -79,7 +84,7 @@ export default {
 
 .title {
   font-size: 1.5em;
-  font-weight: bold;
+  // font-weight: bold;
   @media (min-width: 768px) {
     text-align: center;
   }
@@ -87,5 +92,10 @@ export default {
 
 .log-button {
   float: right;
+}
+
+.footer {
+  text-align: center;
+  line-height: 1.8;
 }
 </style>

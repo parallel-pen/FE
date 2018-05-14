@@ -1,6 +1,14 @@
 <template>
 <div class="index">
-  {{ articles[0] }}
+  <div class="main-title-wrapper" :class="mainTitle.fonts[mainTitle.index]">
+    <h1 class="main-title">{{ mainTitle.content }}</h1>
+    <h1 class="main-title reverse">{{ mainTitle.content }}</h1>
+  </div>
+  <p class="sub-title">与<span class="count">{{ userCount }}</span>名用户一起</p>
+  <p class="sub-title">探索剧情发展, 创造新的世界线</p>
+  <div class="button">
+    <Button type="ghost" shape="circle" icon="chevron-right" size="large"></Button>
+  </div>
 </div>
 </template>
 
@@ -9,27 +17,109 @@ export default {
   name: 'Index',
   data() {
     return {
-      articles: ['“又到一年穿越季，本时空旅游公司恢复营业，开门见喜，优惠八折！\
-        按照我大吃货帝国的悠久传统，一年之计在于吃，民以食为天。所谓吉祥喜气，就是\
-        飘溢出来的煎炒烹炸的各种美味香气。我们的唐穿之旅也不例外，特别是很多热爱穿\
-        越的妹子都笃信“要征服男人的心，必先征服他的胃”，怀揣各种食谱去猎杀唐朝帅哥的女客真是不要太多哦！\
-        不过呢，之前我们已经说过了，唐朝没辣椒，没土豆，没炒锅，没花生，穿越女们要端出一盆水煮鱼或宫保鸡丁\
-        是不可能的，就算简单煮个玉米或烤个红薯都做不到。于是很多妹子另辟蹊径，打算用“抹茶蛋糕”“奶油曲奇”“北海道吐司”之类的糕点去惊艳唐朝人。\
-        如意算盘打得也很好：焙烘糕点用的原材料不是很简单吗？面粉、油、水、糖、茶末等调味料有啥算啥，马马虎虎凑合一下……\
-      '],
+      mainTitle: {
+        content: '',
+        fonts: ['font1', 'font2', 'font3', 'font4'],
+        index: 0,
+      },
+      defaultTitle: 'Parallel Pen',
+      userCount: 112,
     };
   },
+  mounted() {
+    this.input(this.mainTitle.content);
+  },
+  methods: {
+    input() {
+      const len = this.defaultTitle.length
+      for (let i = 0; i < len; i++) {
+        setTimeout(() => {
+          this.mainTitle.content = this.defaultTitle.substring(0, i + 1);
+          if (i === len - 1) {
+            setTimeout(() => {
+              this.del();
+            }, 1500);
+          }
+        }, i * 90);
+      }
+    },
+    del() {
+      const len = this.mainTitle.content.length;
+      for (let i = 0; i < len; i++) {
+        setTimeout(() => {
+          this.mainTitle.content =
+            this.mainTitle.content.substring(0, this.mainTitle.content.length - i);
+          if (i === len - 1) {
+            this.mainTitle.index = (this.mainTitle.index + 1) % this.mainTitle.fonts.length;
+            setTimeout(() => {
+              this.input();
+            }, 1000);
+          }
+        }, i * 70);
+      }
+    }
+  }
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-.index {
-  font-size: 1.5em;
-  @media (min-width: 768px) { width: 500px; }
-  @media (min-width: 992px) { width: 700px; }
-  margin: 0 auto;
-  line-height: 1.8;
+.reverse {
+  transform: scaleY(-1);
+  opacity: 0.2;
 }
-
+.index {
+  height: 100vh;
+  padding-top: 28vh;
+  text-align: center;
+}
+.main-title-wrapper {
+  .main-title {
+    width: fit-content;
+    margin: 0 auto;
+    font-size: 4em;
+    font-weight: normal;
+    height: 1em;
+    @media (min-width: 768px) { font-size: 5em; }
+    @media (min-width: 992px) { font-size: 6em; }
+    line-height: 1;
+    border-bottom: 1px solid black;
+    margin-bottom: 20px;
+    // padding: 0 10px;
+    animation: cursor 800ms steps(2) infinite;
+  }
+  margin-bottom: 5vh;
+  color: #444444;
+  &.font2 {
+    font-family: 'Dancing Script', cursive;
+  }
+  &.font3 {
+    font-family: 'Crimson Text', serif;
+  }
+  &.font1 {
+    font-family: 'Roboto', sans-serif;
+  }
+  &.font4 {
+    font-family: 'Gloria Hallelujah', cursive;
+  }
+}
+.sub-title {
+  font-size: 1.3em;
+  color: #666666;
+  line-height: 2;
+  .count {
+    font-size: 1.5em;
+    padding: 0 5px;
+  }
+}
+.button {
+  margin-top: 7vh;
+}
+@keyframes cursor {
+  from {
+    border-right: 1px solid transparent;
+  } to {
+    border-right: 1px solid black;
+  }
+}
 </style>
