@@ -6,9 +6,11 @@
   </div>
   <p class="sub-title">与<span class="count">{{ userCount }}</span>名用户一起</p>
   <p class="sub-title">探索剧情发展, 创造新的世界线</p>
-  <div class="button">
-    <Button type="ghost" shape="circle" icon="chevron-right" size="large"></Button>
-  </div>
+  <router-link to="recent">
+    <div class="button">
+      <Button type="ghost" shape="circle" icon="chevron-right" size="large"></Button>
+    </div>
+  </router-link>
 </div>
 </template>
 
