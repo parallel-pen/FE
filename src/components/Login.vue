@@ -80,7 +80,7 @@ export default {
         type: 'primary',
         loading: false,
         text: '注册',
-        disabled: true
+        disabled: false
       },
       loginForm: {
         user: '',
@@ -195,9 +195,9 @@ export default {
     }
   },
   watch: {
-    userFormValid(val) {
-      this.submitButton.disabled = !val;
-    },
+    // userFormValid(val) {
+    //   this.submitButton.disabled = !val;
+    // },
     newUser(val) {
       this.toggleLogin(val);
     },
