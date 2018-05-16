@@ -6,20 +6,12 @@
     @login="login(true)"
   />
   <Layout>
-    <Header>
+    <Header ref="header" :style="styles.header">
       <Row>
-        <Col
-          :xs="12"
-          :sm="{ span: 6, offset: 9}"
-        >
+        <Col :xs="12" :sm="{ span: 6, offset: 9}" >
           <div class="title">Parallel Pen</div>
         </Col>
-        <Col
-          :xs="12"
-          :sm="9"
-          :md="6"
-          :lg="4"
-        >
+        <Col :xs="12" :sm="9" :md="6" :lg="4">
           <div v-if="isLoged" class="log-button">
             <Button type="text" @click="login(false)">
               退出登录
@@ -33,26 +25,19 @@
         </Col>
       </Row>
     </Header>
-    <Content>
-      <!-- <Row>
-        <Col :span="22" :offset="1"> -->
-          <div class="content">
-            <router-view/>
-          </div>
-        <!-- </Col>
-      </Row> -->
+    <Content ref="content" :style="styles.content">
+      <router-view/>
     </Content>
-    <Footer>
-      <div class="footer">
-        <p>Copyright © 2018</p>
-        <p>CUC DMA.All Rights Reserved</p>
-      </div>
+    <Footer ref="footer" :style="styles.footer">
+      <p>Copyright © 2018</p>
+      <p>CUC DMA.All Rights Reserved</p>
     </Footer>
   </Layout>
 </div>
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex';
 import Login from '@/components/Login';
 export default {
   name: 'App',
@@ -60,22 +45,78 @@ export default {
     return {
       isLoginShow: false,
       isLoged: false,
+      styles: {
+        header: {
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          transition: 'top 0.4s ease-in'
+        },
+        content: {
+          margin: '88px 0 0',
+          minHeight: '80vh',
+        },
+        footer: {
+          textAlign: 'center',
+          lineHeight: 1.8,
+        }
+      }
+      
     };
+  },
+  mounted() {
+    this.updateHeaderHeight();
+    this.updateContentTop();
+    window.addEventListener('scroll', this.updateContentTop);
+  },
+  unmounted() {
+    window.removeEventListener('scroll', this.updateContentTop);
   },
   components: {
     Login,
   },
   computed: {
-
+    ...mapState('layout', [
+      'headerHeight',
+      'contentTop',
+    ])
   },
   methods: {
+    checkLogin() {
+      
+    },
+    autoHeader() {
+
+    },
+    updateHeaderHeight() {
+      this.commitUpdateHeaderHeight(this.$refs.header.$el.clientHeight);
+    },
+    updateContentTop() {
+      this.updateHeaderHeight();
+      const { top } = this.$refs.content.$el.getBoundingClientRect();
+      this.commitUpdateContentTop(top);
+    },
     toggleLoginShow(isShow) {
       this.isLoginShow = !!isShow;
     },
     login(state) {
       this.isLoged = state;
-    }
+    },
+    ...mapMutations('layout', {
+      commitUpdateHeaderHeight: 'updateHeaderHeight',
+      commitUpdateContentTop: 'updateContentTop',
+    })
   },
+  watch: {
+    contentTop(oldVal, Val) {
+      if (oldVal < Val) {
+        this.styles.header.top = `${-this.headerHeight}px`;
+      } else {
+        this.styles.header.top = 0;
+      }
+    }
+  }
 };
 </script>
 
@@ -97,8 +138,7 @@ export default {
 }
 
 .footer {
-  text-align: center;
-  line-height: 1.8;
+  
 }
 .content {
   padding: 20px 10px;

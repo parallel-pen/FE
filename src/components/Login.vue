@@ -155,9 +155,9 @@ export default {
     hide() {
       this.$emit('toggleShow', false);
     },
-    // validate(name, callback) {
-    //   this.$refs[name].validate(callback);
-    // },
+    validate(name, callback) {
+      this.$refs[name].validate(callback);
+    },
     validateField(name, prop, callback) {
       this.$refs[name].validateField(prop, callback);
     },
@@ -195,9 +195,6 @@ export default {
     }
   },
   watch: {
-    // userFormValid(val) {
-    //   this.submitButton.disabled = !val;
-    // },
     newUser(val) {
       this.toggleLogin(val);
     },
