@@ -1,8 +1,8 @@
 <template>
 <div class="article-container">
+  <div class="controller"></div>
   <p class="node-id">{{ node.id }}</p>
-  <div class="node-content" v-html="convert(node.content)">
-  </div>
+  <div class="node-content" v-html="convert(node.content)"></div>
 </div>
 </template>
 
