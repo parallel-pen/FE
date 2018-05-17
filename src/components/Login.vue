@@ -10,7 +10,7 @@
   </p>
 
   <p class="center tips">Parallel Pen 内测阶段暂不开放公开注册, 敬请关注</p>
-  <a href="#" @click.prevent="toggleLogin">
+  <a href="#" @click.prevent="toggleMode">
     <p class="center tips">{{ newUser ? tips.login : tips.register }}</p>
   </a>
   
@@ -73,8 +73,7 @@
 </template>
 
 <script>
-import _ from 'lodash';
-import Cookies from 'js-cookie';
+import { mapState, mapMutations } from 'vuex';
 import userApi from '@/api/user';
 export default {
   data() {
@@ -181,7 +180,11 @@ export default {
                   this.hide();
                   this.$Message.success({
                     content: '注册成功'
-                  })
+                  });
+                  this.saveUser({
+                    account,
+                    token: res.data.token,
+                  });
                 } else {
                   this.$Message.error({
                     content: userApi.err(res.data.code)
@@ -203,7 +206,11 @@ export default {
                   this.hide();
                   this.$Message.success({
                     content: '登录成功'
-                  })
+                  });
+                  this.saveUser({
+                    account,
+                    token: res.data.token,
+                  });
                 } else {
                   this.$Message.error({
                     content: userApi.err(res.data.code)
@@ -220,9 +227,12 @@ export default {
         }
       });
     },
-    toggleLogin() {
+    toggleMode() {
       this.newUser = !this.newUser;
-    }
+    },
+    ...mapMutations('user', {
+      saveUser: 'save',
+    })
   }
 };
 </script>

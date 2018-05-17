@@ -3,19 +3,25 @@
   <Login
     :value="isLoginShow"
     @toggleShow="toggleLoginShow"
-    @login="login(true)"
   />
   <Layout>
     <Header ref="header" :style="styles.header">
       <Row>
-        <Col :xs="12" :sm="{ span: 6, offset: 9}" >
+        <Col :xs="9" :sm="{ span: 6, offset: 9}" >
           <div class="title">Parallel Pen</div>
         </Col>
-        <Col :xs="12" :sm="9" :md="6" :lg="4">
-          <div v-if="isLoged" class="log-button">
-            <Button type="text" @click="login(false)">
-              退出登录
-            </Button>
+        <Col :xs="15" :sm="9" :md="6" :lg="4">
+          <div v-if="isLogged" class="log-button">
+            <Dropdown placement="bottom-end" @on-click="handleDropdownClick">
+              <div>
+                <span class="account">{{ account }}</span>
+                <Icon type="arrow-down-b"></Icon>
+              </div>
+              <DropdownMenu slot="list">
+                <DropdownItem name="user">个人中心</DropdownItem>
+                <DropdownItem divided name="logout">退出登录</DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
           </div>
           <div v-else class="log-button">
             <Button type="ghost" @click="toggleLoginShow(true)">
@@ -44,7 +50,6 @@ export default {
   data() {
     return {
       isLoginShow: false,
-      isLoged: false,
       styles: {
         header: {
           position: 'fixed',
@@ -64,6 +69,9 @@ export default {
       }
     };
   },
+  created() {
+    this.checkUser();
+  },
   mounted() {
     this.updateHeaderHeight();
     this.updateContentTop();
@@ -79,10 +87,24 @@ export default {
     ...mapState('layout', [
       'headerHeight',
       'contentTop',
+    ]),
+    ...mapState('user', [
+      'isLogged',
+      'account',
     ])
   },
   methods: {
-    checkLogin() {
+    handleDropdownClick(name) {
+      switch (name) {
+        case 'user':
+          this.$router.push('/recent');
+          break;
+        case 'logout':
+          this.logoutUser();
+          break;
+        default:
+          break;
+      }
     },
     updateHeaderHeight() {
       this.commitUpdateHeaderHeight(this.$refs.header.$el.clientHeight);
@@ -95,12 +117,13 @@ export default {
     toggleLoginShow(isShow) {
       this.isLoginShow = !!isShow;
     },
-    login(state) {
-      this.isLoged = state;
-    },
     ...mapMutations('layout', {
       commitUpdateHeaderHeight: 'updateHeaderHeight',
       commitUpdateContentTop: 'updateContentTop',
+    }),
+    ...mapMutations('user', {
+      checkUser: 'check',
+      logoutUser: 'logout',
     })
   },
   watch: {
@@ -118,7 +141,6 @@ export default {
 
 .title {
   font-size: 1.5em;
-  // font-weight: bold;
   @media (min-width: 768px) {
     text-align: center;
   }
@@ -126,13 +148,15 @@ export default {
 
 .log-button {
   float: right;
+  cursor: pointer;
 }
 
-.footer {
-  
+.account {
+  margin-right: 10px;
 }
+
 .content {
-  padding: 20px 10px;
+  // padding: 20px 0;
   min-height: 80vh
 }
 </style>
