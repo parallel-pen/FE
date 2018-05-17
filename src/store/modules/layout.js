@@ -1,8 +1,3 @@
-const state = {
-  headerHeight: null,
-  contentTop: null,
-};
-
 const getters = {
 };
 
@@ -16,6 +11,11 @@ const mutations = {
   updateContentTop(state, top) {
     state.contentTop = top;
   },
+};
+
+const state = {
+  headerHeight: null,
+  contentTop: null,
 };
 
 export default {

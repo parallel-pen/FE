@@ -51,7 +51,7 @@ export default {
           top: 0,
           left: 0,
           right: 0,
-          transition: 'top 0.4s ease-in'
+          transition: 'top 350ms ease-out'
         },
         content: {
           margin: '88px 0 0',
@@ -62,7 +62,6 @@ export default {
           lineHeight: 1.8,
         }
       }
-      
     };
   },
   mounted() {
@@ -84,10 +83,6 @@ export default {
   },
   methods: {
     checkLogin() {
-      
-    },
-    autoHeader() {
-
     },
     updateHeaderHeight() {
       this.commitUpdateHeaderHeight(this.$refs.header.$el.clientHeight);
@@ -109,12 +104,8 @@ export default {
     })
   },
   watch: {
-    contentTop(oldVal, Val) {
-      if (oldVal < Val) {
-        this.styles.header.top = `${-this.headerHeight}px`;
-      } else {
-        this.styles.header.top = 0;
-      }
+    contentTop(oldVal, val) {
+      this.styles.header.top = oldVal < val ? `${-this.headerHeight}px` : 0;
     }
   }
 };
