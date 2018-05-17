@@ -2,29 +2,31 @@
 <Modal
   :value="value"
   @on-cancel="hide"
-  :width="350"
+  :width="370"
+  :styles="{ top: 'calc(50% - 220px)' }"
 >
   <p slot="header" class="center">
     <span>{{ title }}</span>
   </p>
 
   <p class="center tips">Parallel Pen 内测阶段暂不开放公开注册, 敬请关注</p>
-  <p v-if="newUser" class="center tips">已注册用户将自动登录</p>
-  <p v-else class="center tips">您已注册, 请登录</p>
+  <a href="#" @click.prevent="toggleLogin">
+    <p class="center tips">{{ newUser ? tips.login : tips.register }}</p>
+  </a>
+  
   <Form
-    ref="loginForm"
-    :model="loginForm"
+    ref="userForm"
+    :model="userForm"
     :rules="rules"
   >
-    <FormItem prop="user">
+    <FormItem prop="account">
       <Input
         type="text"
-        v-model="loginForm.user"
+        v-model="userForm.account"
         placeholder="用户名"
         size="large"
         autofocus
-        @on-change="handleInputChange('loginForm', 'user')"
-        @on-blur="checkExist(loginForm.user)"
+        @on-change="handleInputChange('userForm', 'account')"
       >
         <Icon type="ios-person-outline" slot="prepend"></Icon>
       </Input>
@@ -32,21 +34,23 @@
     <FormItem prop="password">
       <Input
         type="password"
-        v-model="loginForm.password"
+        v-model="userForm.password"
         placeholder="密码"
         size="large"
-        @on-change="handleInputChange('loginForm', 'password')"
+        @on-change="handleInputChange('userForm', 'password')"
+        @on-enter="handleSubmit('userForm')"
       >
         <Icon type="ios-locked-outline" slot="prepend"></Icon>
       </Input>
     </FormItem>
-    <FormItem prop="invitationCode" v-if="newUser">
+    <FormItem prop="invitation" v-if="newUser">
       <Input
         type="text"
-        v-model="loginForm.invitationCode"
+        v-model="userForm.invitation"
         placeholder="邀请码"
         size="large"
-        @on-change="handleInputChange('loginForm', 'invitationCode')"
+        @on-change="handleInputChange('userForm', 'invitation')"
+        @on-enter="handleSubmit('userForm')"
       >
         <Icon type="ios-pricetag-outline" slot="prepend"></Icon>
       </Input>
@@ -55,14 +59,13 @@
 
   <div slot="footer">
     <Button
-      :type="submitButton.type"
+      :type="newUser ? submitButton.register.type : submitButton.login.type"
       size="large"
       long
       :loading="submitButton.loading"
-      :disabled="submitButton.disabled"
-      @click="handleSubmit('loginForm')"
+      @click="handleSubmit('userForm')"
     >
-      {{ submitButton.text }}
+      {{ newUser ? submitButton.register.text : submitButton.login.text }}
     </Button>
   </div>
 </Modal>
@@ -70,25 +73,35 @@
 
 <script>
 import _ from 'lodash';
+import userApi from '@/api/user';
+import user from '../api/user';
 export default {
   data() {
     return {
-      existUsers: ['a', 'b', 'tangjing'],
       title: '欢迎来到 Parallel Pen',
-      newUser: true,
-      submitButton: {
-        type: 'primary',
-        loading: false,
-        text: '注册',
-        disabled: false
+      tips: {
+        login: '已有账号？点此登录',
+        register: '没有账号？点此注册'
       },
-      loginForm: {
-        user: '',
+      newUser: false,
+      submitButton: {
+        login: {
+          type: 'success',
+          text: '登录'
+        },
+        register: {
+          type: 'primary',
+          text: '注册'
+        },
+        loading: false
+      },
+      userForm: {
+        account: '',
         password: '',
-        invitationCode: ''
+        invitation: ''
       },
       rules: {
-        user: [
+        account: [
           {
             required: true,
             message: '请输入用户名',
@@ -116,7 +129,7 @@ export default {
             trigger: 'blur'
           }
         ],
-        invitationCode: [
+        invitation: [
           {
             required: true,
             message: '请输入邀请码',
@@ -129,11 +142,6 @@ export default {
             trigger: 'blur'
           }
         ]
-      },
-      formPropsValid: {
-        user: false,
-        password: false,
-        invitationCode: false
       }
     };
   },
@@ -143,13 +151,8 @@ export default {
       required: true
     }
   },
-  computed: {
-    userFormValid() {
-      let basicValid = this.formPropsValid.user && this.formPropsValid.password;
-      return this.newUser
-        ? basicValid && this.formPropsValid.invitationCode
-        : basicValid;
-    }
+  mounted() {
+    this.newUser = false;
   },
   methods: {
     hide() {
@@ -161,46 +164,63 @@ export default {
     validateField(name, prop, callback) {
       this.$refs[name].validateField(prop, callback);
     },
-    resetFields(name) {
-      this.$refs[name].resetFields();
-    },
     handleInputChange(name, prop) {
-      this.validateField(name, prop, valid => {
-        this.formPropsValid[prop] = !valid;
-      });
+      this.validateField(name, prop);
     },
     handleSubmit(name) {
-      if (this.userFormValid) {
-        this.submitButton.loading = true;
-        // TODO
-        setTimeout(() => {
-          this.hide();
-          this.submitButton.loading = false;
-          this.$emit('login');
-        }, 2000);
-      }
+      this.validate(name, valid => {
+        if (valid) {
+          this.submitButton.loading = true;
+          if (this.newUser) {
+            userApi
+              .register(this.userForm)
+              .then(res => {
+                if (res.data.code === 100000) {
+                  this.hide();
+                  this.$Message.success({
+                    content: '注册成功'
+                  })
+                } else {
+                  this.$Message.error({
+                    content: userApi.err(res.data.code)
+                  })
+                }
+              })
+              .catch(err => {
+                console.log(err);
+              })
+              .finally(() => {
+                this.submitButton.loading = false;
+              });
+          } else {
+            const { account, password } = this.userForm;
+            userApi
+              .login({ account, password })
+              .then(res => {
+                if (res.data.code === 100000) {
+                  this.hide();
+                  this.$Message.success({
+                    content: '登录成功'
+                  })
+                } else {
+                  this.$Message.error({
+                    content: userApi.err(res.data.code)
+                  })
+                }
+              })
+              .catch(err => {
+                console.log(err);
+              })
+              .finally(() => {
+                this.submitButton.loading = false;
+              });
+          }
+        }
+      });
     },
-    toggleLogin(isNew) {
-      if (isNew) {
-        this.submitButton.text = '注册';
-        this.submitButton.type = 'primary';
-      } else {
-        this.submitButton.text = '登录';
-        this.submitButton.type = 'success';
-      }
-    },
-    // TODO
-    checkExist(user) {
-      this.newUser = !this.existUsers.includes(user);
+    toggleLogin() {
+      this.newUser = !this.newUser;
     }
-  },
-  watch: {
-    newUser(val) {
-      this.toggleLogin(val);
-    },
-    'loginForm.user': _.debounce(function() {
-      this.checkExist(this.loginForm.user);
-    }, 500)
   }
 };
 </script>
