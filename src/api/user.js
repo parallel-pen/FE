@@ -1,15 +1,15 @@
-import axios from './config';
+import fetch from './config';
 
 export default {
   register({ account, password, invitation }) {
-    return axios.post('/register', {
+    return fetch.post('/register', {
       account,
       password,
       invitation,
     });
   },
   login({ account, password }) {
-    return axios.post('/login', {
+    return fetch.post('/login', {
       account,
       password,
     });
