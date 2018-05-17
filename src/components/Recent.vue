@@ -1,7 +1,7 @@
 <template>
 <div class="recent">
   <div class="article-list">
-    <Row :gutter="16">
+    <Row>
       <Col
         :xs="24"
         :sm="12"
@@ -78,6 +78,7 @@ export default {
   margin: 0 auto;
   .article-card {
     margin-bottom: 16px;
+    padding: 0 8px;
     .content {
       display: -webkit-box;
       -webkit-box-orient: vertical;
