@@ -27,6 +27,7 @@
         size="large"
         autofocus
         @on-change="handleInputChange('userForm', 'account')"
+        @on-enter="handleSubmit('userForm')"
       >
         <Icon type="ios-person-outline" slot="prepend"></Icon>
       </Input>
@@ -73,8 +74,8 @@
 
 <script>
 import _ from 'lodash';
+import Cookies from 'js-cookie';
 import userApi from '@/api/user';
-import user from '../api/user';
 export default {
   data() {
     return {
@@ -172,8 +173,9 @@ export default {
         if (valid) {
           this.submitButton.loading = true;
           if (this.newUser) {
+            const { account, password, invitation } = this.userForm;
             userApi
-              .register(this.userForm)
+              .register({ account, password, invitation })
               .then(res => {
                 if (res.data.code === 100000) {
                   this.hide();

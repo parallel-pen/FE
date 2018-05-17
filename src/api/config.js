@@ -2,6 +2,10 @@ import axios from 'axios';
 
 const baseURL = 'http://localhost:8888/api';
 
-axios.defaults.baseURL = baseURL;
+const fetch = axios.create({
+  baseURL,
+  timeout: 8000,
+  withCredentials: true,
+});
 
-export default axios;
+export default fetch;
