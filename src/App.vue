@@ -138,7 +138,7 @@ export default {
 .title {
   font-family: 'Crimson Text', serif;
   cursor: pointer;
-  font-size: 1.8em;
+  font-size: 2em;
   @media (min-width: 768px) {
     text-align: center;
   }
