@@ -1,14 +1,11 @@
 <template>
 <div id="app">
-  <Login
-    :value="isLoginShow"
-    @toggleShow="toggleLoginShow"
-  />
+  <Login></Login>
   <Layout>
     <Header ref="header" :style="styles.header">
       <Row>
         <Col :xs="9" :sm="{ span: 6, offset: 9}" >
-          <div class="title">Parallel Pen</div>
+          <div class="title" @click="$router.push('/')">Parallel Pen</div>
         </Col>
         <Col :xs="15" :sm="9" :md="6" :lg="4">
           <div v-if="isLogged" class="log-button">
@@ -49,14 +46,14 @@ export default {
   name: 'App',
   data() {
     return {
-      isLoginShow: false,
       styles: {
         header: {
           position: 'fixed',
           top: 0,
           left: 0,
           right: 0,
-          transition: 'top 350ms ease-out'
+          transition: 'top 350ms ease-out',
+          zIndex: 999,
         },
         content: {
           margin: '88px 0 0',
@@ -85,6 +82,7 @@ export default {
   },
   computed: {
     ...mapState('layout', [
+      'isLoginShow',
       'headerHeight',
       'contentTop',
     ]),
@@ -114,10 +112,8 @@ export default {
       const { top } = this.$refs.content.$el.getBoundingClientRect();
       this.commitUpdateContentTop(top);
     },
-    toggleLoginShow(isShow) {
-      this.isLoginShow = !!isShow;
-    },
     ...mapMutations('layout', {
+      toggleLoginShow: 'toggleLoginShow',
       commitUpdateHeaderHeight: 'updateHeaderHeight',
       commitUpdateContentTop: 'updateContentTop',
     }),
@@ -129,6 +125,11 @@ export default {
   watch: {
     contentTop(oldVal, val) {
       this.styles.header.top = oldVal < val ? `${-this.headerHeight}px` : 0;
+    },
+    isLogged(oldVal, val) {
+      if (!val) {
+        this.$router.push('/');
+      }
     }
   }
 };
@@ -140,6 +141,7 @@ export default {
 }
 
 .title {
+  cursor: pointer;
   font-size: 1.5em;
   @media (min-width: 768px) {
     text-align: center;

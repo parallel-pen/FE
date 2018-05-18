@@ -1,7 +1,7 @@
 <template>
 <Modal
-  :value="value"
-  @on-cancel="hide"
+  :value="isLoginShow"
+  @on-cancel="toggleLoginShow"
   :width="370"
   :styles="{ top: 'calc(50% - 220px)' }"
 >
@@ -145,19 +145,13 @@ export default {
       }
     };
   },
-  props: {
-    value: {
-      type: Boolean,
-      required: true
-    }
+  computed: {
+    ...mapState('layout', ['isLoginShow'])
   },
   mounted() {
     this.newUser = false;
   },
   methods: {
-    hide() {
-      this.$emit('toggleShow', false);
-    },
     validate(name, callback) {
       this.$refs[name].validate(callback);
     },
@@ -177,7 +171,7 @@ export default {
               .register({ account, password, invitation })
               .then(res => {
                 if (res.data.code === 100000) {
-                  this.hide();
+                  this.toggleLoginShow();
                   this.$Message.success({
                     content: '注册成功'
                   });
@@ -203,7 +197,7 @@ export default {
               .login({ account, password })
               .then(res => {
                 if (res.data.code === 100000) {
-                  this.hide();
+                  this.toggleLoginShow();
                   this.$Message.success({
                     content: '登录成功'
                   });
@@ -232,7 +226,8 @@ export default {
     },
     ...mapMutations('user', {
       saveUser: 'save',
-    })
+    }),
+    ...mapMutations('layout', ['toggleLoginShow'])
   }
 };
 </script>
