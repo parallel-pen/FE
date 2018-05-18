@@ -11,11 +11,15 @@ const mutations = {
   updateContentTop(state, top) {
     state.contentTop = top;
   },
+  toggleLoginShow(state) {
+    state.isLoginShow = !state.isLoginShow;
+  },
 };
 
 const state = {
   headerHeight: null,
   contentTop: null,
+  isLoginShow: false,
 };
 
 export default {

@@ -1,16 +1,13 @@
 import Cookies from 'js-cookie';
 
-const state = {
-  isLogged: false,
-  account: '',
-};
-
 const mutations = {
   check(state) {
     const account = Cookies.get('account');
     if (account) {
       state.isLogged = true;
       state.account = account;
+    } else {
+      state.isLogged = false;
     }
   },
   save(state, { account, token }) {
@@ -24,11 +21,16 @@ const mutations = {
     state.account = '';
     Cookies.remove('account');
     Cookies.remove('token');
-  }
+  },
 };
 
 const actions = {
 
+};
+
+const state = {
+  isLogged: false,
+  account: '',
 };
 
 export default {
