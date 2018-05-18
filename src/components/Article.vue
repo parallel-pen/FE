@@ -1,7 +1,7 @@
 <template>
 <div class="article-container">
   <div class="controller" :style="styles.controller">
-    <Button type="ghost" shape="circle" size="large" icon="ios-heart-outline" class="side-button"></Button>
+    <Button type="ghost" shape="circle" size="large" icon="ios-heart-outline" class="side-button" disabled></Button>
   </div>
   <div class="node-content" v-html="node.content"></div>
   <div class="node-info">
@@ -51,7 +51,7 @@ export default {
             console.log(res.data)
             this.node.content = marked(res.data.content);
             this.node.author = res.data.author;
-            this.node.timestamp = dayjs(res.data.timestamp);
+            this.node.timestamp = dayjs(res.data.timestamp).format('YYYY-MM-DD H:m');
           }
         })
         .catch(err => {
@@ -97,8 +97,9 @@ $md: 600px;
   // }
   .controller {
     left: 50%;
-    @media (min-width: 768px) { margin-left: -$sm / 2 - 100px; }
-    @media (min-width: 992px) { margin-left: -$md / 2 - 100px; }
+    $offset: 120px;
+    @media (min-width: 768px) { margin-left: -$sm / 2 - $offset; }
+    @media (min-width: 992px) { margin-left: -$md / 2 - $offset; }
     .side-button {
       padding: 0;
       line-height: 50px;
@@ -123,6 +124,13 @@ $md: 600px;
       -webkit-margin-start: 0px;
       -webkit-margin-end: 0px;
     }
+  }
+  .node-info {
+    text-align: right;
+    margin-top: 40px;
+    font-size: 1.2em;
+    font-style: italic;
+    color: #999999;
   }
 }
 </style>
