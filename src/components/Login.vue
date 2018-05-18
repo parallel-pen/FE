@@ -177,12 +177,12 @@ export default {
                   });
                   this.saveUser({
                     account,
-                    token: res.data.token,
+                    token: res.data.token
                   });
                 } else {
                   this.$Message.error({
                     content: userApi.err(res.data.code)
-                  })
+                  });
                 }
               })
               .catch(err => {
@@ -203,12 +203,12 @@ export default {
                   });
                   this.saveUser({
                     account,
-                    token: res.data.token,
+                    token: res.data.token
                   });
                 } else {
                   this.$Message.error({
                     content: userApi.err(res.data.code)
-                  })
+                  });
                 }
               })
               .catch(err => {
@@ -225,7 +225,7 @@ export default {
       this.newUser = !this.newUser;
     },
     ...mapMutations('user', {
-      saveUser: 'save',
+      saveUser: 'save'
     }),
     ...mapMutations('layout', ['toggleLoginShow'])
   }
