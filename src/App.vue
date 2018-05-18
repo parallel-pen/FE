@@ -57,6 +57,7 @@ export default {
         },
         content: {
           margin: '88px 0 0',
+          padding: '0 20px',
           minHeight: '80vh',
         },
         footer: {
@@ -151,10 +152,5 @@ export default {
 
 .account {
   margin-right: 10px;
-}
-
-.content {
-  // padding: 20px 0;
-  min-height: 80vh
 }
 </style>
