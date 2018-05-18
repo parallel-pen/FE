@@ -3,25 +3,40 @@
   <div class="controller">
 
   </div>
-  <p class="node-id">{{ node.id }}</p>
-  <div class="node-content" v-html="convert(node.content)"></div>
+  <!-- <p class="node-id">{{ node.id }}</p> -->
+  <div class="node-content" v-html="node.content"></div>
+  <Input v-model="newNode.content" type="textarea" autosize></Input>
 </div>
 </template>
 
 <script>
 import marked from 'marked';
+import node from '@/api/node';
 export default {
   data() {
     return {
       node: {
-        content: '# test\n\n',
-        id: '124958726354758910291295',
-      }
+        content: 'Loading',
+      },
+      newNode: {
+        content: ''
+      },
     }
   },
+  mounted() {
+    this.getNode(this.$route.params.node);
+  },
   methods: {
-    convert(str) {
-      return marked(str);
+    getNode(nodeId) {
+      node.getNode(nodeId)
+        .then(res => {
+          if (res.data.code === 100000) {
+            this.node.content = marked(res.data.content);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        })
     }
   }
 }

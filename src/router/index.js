@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import store from '@/store';
+// import store from '@/store';
 import Index from '@/components/Index';
 import Recent from '@/components/Recent';
 import Article from '@/components/Article';
@@ -32,7 +32,7 @@ const router = new Router({
       meta: { requiresAuth: true },
     },
     {
-      path: '/article/:id/:node',
+      path: '/article/beta/:node',
       name: 'Article',
       component: Article,
       meta: { requiresAuth: true },

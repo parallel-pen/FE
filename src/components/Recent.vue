@@ -35,35 +35,17 @@ export default {
     return {
       articles: [
         {
-          id: 1,
+          id: '100000000000000000000000',
           title: '一夜',
           date: '2018.5.5',
           content: ''
         },
-        {
-          id: 2,
-          title: '测试文章',
-          date: '2018.5.4',
-          content: ''
-        },
-        {
-          id: 3,
-          title: '测试文章',
-          date: '2018.5.3',
-          content: ''
-        },
-        {
-          id: 4,
-          title: '测试文章',
-          date: '2018.5.2',
-          content: ''
-        }
       ],
     }
   },
   methods: {
     toArticle(id) {
-      this.$router.push(`article/${id}/1`);
+      this.$router.push(`article/beta/${id}`);
     },
     share(id) {
       alert(`分享${id}成功`);
