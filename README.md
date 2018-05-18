@@ -1,6 +1,10 @@
-# parallel-pen-fe
+<p align="center">
+  <img src="http://olh7l240x.bkt.clouddn.com/18-5-19/25766284.jpg" alt="Parallel Pen"/>
+</p>
 
-> Parallel Pen FE project
+<p align="center">
+  <img src="https://img.shields.io/npm/v/npm.svg?style=flat-square" />
+</p>
 
 ## Build Setup
 
