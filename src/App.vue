@@ -125,11 +125,6 @@ export default {
   watch: {
     contentTop(oldVal, val) {
       this.styles.header.top = oldVal < val ? `${-this.headerHeight}px` : 0;
-    },
-    isLogged(oldVal, val) {
-      if (!val) {
-        this.$router.push('/');
-      }
     }
   }
 };
