@@ -81,72 +81,72 @@ export default {
       title: '欢迎来到 Parallel Pen',
       tips: {
         login: '已有账号？点此登录',
-        register: '没有账号？点此注册'
+        register: '没有账号？点此注册',
       },
       newUser: false,
       submitButton: {
         login: {
           type: 'success',
-          text: '登录'
+          text: '登录',
         },
         register: {
           type: 'primary',
-          text: '注册'
+          text: '注册',
         },
-        loading: false
+        loading: false,
       },
       userForm: {
         account: '',
         password: '',
-        invitation: ''
+        invitation: '',
       },
       rules: {
         account: [
           {
             required: true,
             message: '请输入用户名',
-            trigger: 'blur'
+            trigger: 'blur',
           },
           {
             type: 'string',
             min: 1,
             max: 20,
             message: '用户名最大 20 位',
-            trigger: 'blur'
-          }
+            trigger: 'blur',
+          },
         ],
         password: [
           {
             required: true,
             message: '请输入密码',
-            trigger: 'blur'
+            trigger: 'blur',
           },
           {
             type: 'string',
             min: 6,
             max: 18,
             message: '密码应为 6 至 18 位',
-            trigger: 'blur'
-          }
+            trigger: 'blur',
+          },
         ],
         invitation: [
           {
             required: true,
             message: '请输入邀请码',
-            trigger: 'blur'
+            trigger: 'blur',
           },
           {
             type: 'string',
             len: 8,
             message: '邀请码格式错误',
-            trigger: 'blur'
-          }
-        ]
-      }
+            trigger: 'blur',
+          },
+        ],
+      },
     };
   },
   computed: {
-    ...mapState('layout', ['isLoginShow'])
+    ...mapState('layout', ['isLoginShow']),
   },
   mounted() {
     this.newUser = false;
@@ -173,15 +173,15 @@ export default {
                 if (res.data.code === 100000) {
                   this.toggleLoginShow();
                   this.$Message.success({
-                    content: '注册成功'
+                    content: '注册成功',
                   });
                   this.saveUser({
                     account,
-                    token: res.data.token
+                    token: res.data.token,
                   });
                 } else {
                   this.$Message.error({
-                    content: userApi.err(res.data.code)
+                    content: userApi.err(res.data.code),
                   });
                 }
               })
@@ -199,15 +199,15 @@ export default {
                 if (res.data.code === 100000) {
                   this.toggleLoginShow();
                   this.$Message.success({
-                    content: '登录成功'
+                    content: '登录成功',
                   });
                   this.saveUser({
                     account,
-                    token: res.data.token
+                    token: res.data.token,
                   });
                 } else {
                   this.$Message.error({
-                    content: userApi.err(res.data.code)
+                    content: userApi.err(res.data.code),
                   });
                 }
               })
@@ -225,10 +225,10 @@ export default {
       this.newUser = !this.newUser;
     },
     ...mapMutations('user', {
-      saveUser: 'save'
+      saveUser: 'save',
     }),
-    ...mapMutations('layout', ['toggleLoginShow'])
-  }
+    ...mapMutations('layout', ['toggleLoginShow']),
+  },
 };
 </script>
 

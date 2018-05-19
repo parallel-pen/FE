@@ -63,8 +63,8 @@ export default {
         footer: {
           textAlign: 'center',
           lineHeight: 1.8,
-        }
-      }
+        },
+      },
     };
   },
   created() {
@@ -82,15 +82,8 @@ export default {
     Login,
   },
   computed: {
-    ...mapState('layout', [
-      'isLoginShow',
-      'headerHeight',
-      'contentTop',
-    ]),
-    ...mapState('user', [
-      'isLogged',
-      'account',
-    ])
+    ...mapState('layout', ['isLoginShow', 'headerHeight', 'contentTop']),
+    ...mapState('user', ['isLogged', 'account']),
   },
   methods: {
     handleDropdownClick(name) {
@@ -121,19 +114,20 @@ export default {
     ...mapMutations('user', {
       checkUser: 'check',
       logoutUser: 'logout',
-    })
+    }),
   },
   watch: {
     contentTop(oldVal, val) {
       this.styles.header.top = oldVal < val ? `${-this.headerHeight}px` : 0;
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style lang="scss" scoped>
 #app {
-  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB',
+    'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
 }
 
 .title {
