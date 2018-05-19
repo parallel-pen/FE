@@ -33,7 +33,7 @@ export default {
   },
   methods: {
     input() {
-      const len = this.defaultTitle.length
+      const len = this.defaultTitle.length;
       for (let i = 0; i < len; i++) {
         setTimeout(() => {
           this.mainTitle.content = this.defaultTitle.substring(0, i + 1);
@@ -49,8 +49,10 @@ export default {
       const len = this.mainTitle.content.length;
       for (let i = 0; i < len; i++) {
         setTimeout(() => {
-          this.mainTitle.content =
-            this.mainTitle.content.substring(0, this.mainTitle.content.length - i);
+          this.mainTitle.content = this.mainTitle.content.substring(
+            0,
+            this.mainTitle.content.length - i,
+          );
           if (i === len - 1) {
             this.mainTitle.index = (this.mainTitle.index + 1) % this.mainTitle.fonts.length;
             setTimeout(() => {
@@ -59,12 +61,11 @@ export default {
           }
         }, i * 70);
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 .reverse {
   transform: scaleY(-1);
@@ -82,12 +83,15 @@ export default {
     font-size: 4em;
     font-weight: normal;
     height: 1em;
-    @media (min-width: 768px) { font-size: 5em; }
-    @media (min-width: 992px) { font-size: 6em; }
+    @media (min-width: 768px) {
+      font-size: 5em;
+    }
+    @media (min-width: 992px) {
+      font-size: 6em;
+    }
     line-height: 1;
     border-bottom: 1px solid black;
     margin-bottom: 20px;
-    // padding: 0 10px;
     animation: cursor 800ms steps(2) infinite;
   }
   margin-bottom: 5vh;
@@ -120,7 +124,8 @@ export default {
 @keyframes cursor {
   from {
     border-right: 1px solid transparent;
-  } to {
+  }
+  to {
     border-right: 1px solid black;
   }
 }

@@ -1,7 +1,8 @@
 <template>
 <div class="article-container">
   <div class="controller" :style="styles.controller">
-    <Button type="ghost" shape="circle" size="large" icon="ios-heart-outline" class="side-button" disabled></Button>
+    <Button type="ghost" shape="circle" size="large" icon="ios-heart-outline" class="button like-button" disabled></Button>
+    <Button type="ghost" shape="circle" size="default" icon="android-share-alt" class="button share-button" disabled></Button>
   </div>
   <div class="node-content" v-html="node.content"></div>
   <div class="node-info">
@@ -27,15 +28,15 @@ export default {
         timestamp: '',
       },
       newNode: {
-        content: ''
+        content: '',
       },
       styles: {
         controller: {
           position: 'fixed',
           top: '250px',
-        }
-      }
-    }
+        },
+      },
+    };
   },
   computed: {
     ...mapState('layout', ['contentTop']),
@@ -45,19 +46,20 @@ export default {
   },
   methods: {
     getNode(nodeId) {
-      node.getNode(nodeId)
+      node
+        .getNode(nodeId)
         .then(res => {
           if (res.data.code === 100000) {
-            console.log(res.data)
+            console.log(res.data);
             this.node.content = marked(res.data.content);
-            this.node.author = res.data.author;
-            this.node.timestamp = dayjs(res.data.timestamp).format('YYYY-MM-DD H:m');
+            this.node.author = res.data.authorId;
+            this.node.timestamp = dayjs(res.data.timestamp).format('YYYY-M-D H:m');
           }
         })
         .catch(err => {
           console.log(err);
-        })
-    }
+        });
+    },
   },
   watch: {
     contentTop(oldVal, val) {
@@ -69,17 +71,21 @@ export default {
         style.position = 'absolute';
         style.top = '250px';
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
 $sm: 500px;
 $md: 600px;
 .article-container {
-  @media (min-width: 768px) { width: $sm; }
-  @media (min-width: 992px) { width: $md; }
+  @media (min-width: 768px) {
+    width: $sm;
+  }
+  @media (min-width: 992px) {
+    width: $md;
+  }
   margin: 0 auto;
   // position: relative;
   // .node-id {
@@ -98,21 +104,31 @@ $md: 600px;
   .controller {
     left: 50%;
     $offset: 120px;
-    @media (min-width: 768px) { margin-left: -$sm / 2 - $offset; }
-    @media (min-width: 992px) { margin-left: -$md / 2 - $offset; }
-    .side-button {
+    @media (min-width: 768px) {
+      margin-left: -$sm / 2 - $offset;
+    }
+    @media (min-width: 992px) {
+      margin-left: -$md / 2 - $offset;
+    }
+    .like-button {
       padding: 0;
       line-height: 50px;
       width: 50px;
       height: 50px;
       font-size: 20px;
       text-align: center;
-      /deep/ i {
-      }
+    }
+    .button {
+      display: block;
+      margin: 20px auto;
     }
   }
   .node-content {
-    /deep/ h1,h2,h3,h4,h5 {
+    /deep/ h1,
+    h2,
+    h3,
+    h4,
+    h5 {
       padding: 20px 0;
     }
     /deep/ p {
