@@ -173,7 +173,7 @@ export default {
                 if (res.data.code === 100000) {
                   this.toggleLoginShow();
                   this.$Message.success({
-                    content: '注册成功',
+                    content: '注册成功, 如遇问题请刷新',
                   });
                   this.saveUser({
                     account,
@@ -199,7 +199,7 @@ export default {
                 if (res.data.code === 100000) {
                   this.toggleLoginShow();
                   this.$Message.success({
-                    content: '登录成功',
+                    content: '登录成功, 如遇问题请刷新',
                   });
                   this.saveUser({
                     account,

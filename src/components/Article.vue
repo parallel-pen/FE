@@ -63,7 +63,29 @@
   </div>
   <div v-else class="node-create">
     <h1 class="center title">创建新分支</h1>
-    <Input v-if="editing" v-model="newNode.content" type="textarea" autosize></Input>
+    <Form ref="newNode" :model="newNode" :rules="newNodeRules">
+      <FormItem prop="desc">
+        <Input
+          v-model="newNode.desc"
+          type="textarea"
+          :autosize="{ minRows: 1, maxRows: 3 }"
+          placeholder="请输入分支的短暂描述, 便于其他用户选择"
+        ></Input>
+      </FormItem>
+      <FormItem prop="content">
+        <Tabs>
+          <TabPane label="编辑">
+            <Input
+              v-model="newNode.content"
+              type="textarea"
+              :autosize="{ minRows: 20, maxRows: 40 }"
+              placeholder="请输入分支内容, 支援 Markdown, 建议使用本地编辑器撰写再拷贝至此"
+            ></Input>
+          </TabPane>
+          <TabPane label="预览" v-html="newNodeMarked"></TabPane>
+        </Tabs>
+      </FormItem>
+    </Form>
     <div class="buttons">
       <Button
         type="ghost"
@@ -117,6 +139,36 @@ export default {
           top: '250px',
         },
       },
+      newNodeRules: {
+        content: [
+          {
+            type: 'string',
+            required: true,
+            message: '请输入内容',
+            rigger: 'blur',
+          },
+          {
+            min: 100,
+            max: 4000,
+            message: '字数限制为 100 到 4000',
+            trigger: 'blur',
+          },
+        ],
+        desc: [
+          {
+            type: 'string',
+            required: true,
+            message: '请输入描述',
+            rigger: 'blur',
+          },
+          {
+            min: 10,
+            max: 100,
+            message: '字数限制为 100 到 4000',
+            trigger: 'blur',
+          },
+        ],
+      },
     };
   },
   computed: {
@@ -124,25 +176,37 @@ export default {
       const start = (this.page.current - 1) * this.page.pageSize;
       return this.node.childNodes.slice(start, start + this.page.pageSize);
     },
+    newNodeMarked() {
+      return marked(this.newNode.content);
+    },
     ...mapState('layout', ['contentTop']),
   },
   mounted() {
     this.getNode(this.$route.params.node);
+    this.init();
   },
   beforeRouteUpdate(to, from, next) {
     if (to.name === 'Article') {
       this.getNode(to.params.node);
-      this.page.current = 1;
+      this.init();
     }
     next();
   },
   methods: {
+    init() {
+      this.newNode.content = '';
+      this.newNode.desc = '';
+      this.page.current = 1;
+      this.editing = false;
+    },
+    validate(name, callback) {
+      this.$refs[name].validate(callback);
+    },
     getNode(nodeId, first) {
       node
         .getNode({ nodeId, first })
         .then(res => {
           if (res.data.code === 100000) {
-            console.log(res.data)
             this.node.fatherNodes = res.data.fatherNodes || [];
             this.node.content = marked(res.data.content);
             this.node.author = res.data.author || '';
@@ -174,9 +238,13 @@ export default {
         .catch(err => {});
     },
     submitNewNode() {
-      createNode({
-        fatherId: this.fatherNodes[0].nodeId,
-        ...this.newNode,
+      this.validate('newNode', valid => {
+        if (valid) {
+          this.createNode({
+            fatherId: this.node.fatherNodes[0].nodeId,
+            ...this.newNode,
+          });
+        }
       });
     },
   },
