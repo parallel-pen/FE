@@ -38,21 +38,12 @@ const router = new Router({
       meta: { requiresAuth: true },
     },
   ],
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition;
+    }
+    return { x: 0, y: 0 };
+  },
 });
-
-// router.beforeEach((to, from, next) => {
-//   if (to.matched.some(record => record.meta.requiresAuth)) {
-//     if (!store.state.user.isLogged) {
-//       store.commit('layout/toggleLoginShow');
-//       next({
-//         path: '/',
-//       });
-//     } else {
-//       next();
-//     }
-//   } else {
-//     next();
-//   }
-// });
 
 export default router;
