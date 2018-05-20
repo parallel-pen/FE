@@ -1,15 +1,88 @@
 <template>
 <div class="article-container">
-  <div class="controller" :style="styles.controller">
-    <Button type="ghost" shape="circle" size="large" icon="ios-heart-outline" class="button like-button" disabled></Button>
-    <Button type="ghost" shape="circle" size="default" icon="android-share-alt" class="button share-button" disabled></Button>
+  <div
+    :class="['controller', { hide: hideController }]"
+    :style="styles.controller"
+  >
+    <Button
+      type="ghost"
+      shape="circle"
+      size="large"
+      icon="ios-heart-outline"
+      class="button large-button"
+      disabled
+    ></Button>
+    <Button
+      type="ghost"
+      shape="circle"
+      size="default"
+      icon="android-share-alt"
+      class="button small-button"
+      disabled
+    ></Button>
+    <Button
+      type="ghost"
+      shape="circle"
+      size="default"
+      icon="arrow-left-c"
+      class="button small-button"
+      title="返回上一节点"
+      :disabled="!node.fatherId"
+      @click="$router.push(`/article/beta/${node.fatherId}`)"
+    ></Button>
   </div>
   <div class="node-content" v-html="node.content"></div>
   <div class="node-info">
     <p>{{ node.author }}</p>
     <p>{{ node.timestamp }}</p>
   </div>
-  <Input v-if="editing" v-model="newNode.content" type="textarea" autosize></Input>
+  <div v-if="!editing" class="node-children">
+    <h1 class="center title">分支选择</h1>
+    <p v-if="!node.childNodes.length" class="center">暂无分支, 快创建吧</p>
+    <template v-for="child in childNodesPage">
+      <p class="node-child" @click="$router.push(`/article/beta/${child.nodeId}`)">{{ child.desc }}</p>
+    </template>
+    <Page
+      class-name="page center"
+      v-if="node.childNodes.length > page.pageSize"
+      :current.sync="page.current"
+      :total="node.childNodes.length"
+      :page-size="page.pageSize"
+      size="small"
+    >
+    </Page>
+    <Button
+      type="ghost"
+      shape="circle"
+      size="large"
+      icon="plus-round"
+      class="create-button"
+      @click="editing = true"
+    ></Button>
+    <p class="center">立即创建新分支</p>
+  </div>
+  <div v-else class="node-create">
+    <h1 class="center title">创建新分支</h1>
+    <Input v-if="editing" v-model="newNode.content" type="textarea" autosize></Input>
+    <div class="buttons">
+      <Button
+        type="ghost"
+        shape="circle"
+        size="large"
+        icon="arrow-left-c"
+        class="button"
+        @click="editing = false"
+      ></Button>
+      <Button
+        type="ghost"
+        shape="circle"
+        size="large"
+        icon="checkmark-round"
+        class="button"
+        @click="submitNewNode"
+      ></Button>
+    </div>
+  </div>
 </div>
 </template>
 
@@ -21,14 +94,22 @@ import node from '@/api/node';
 export default {
   data() {
     return {
+      hideController: false,
       editing: false,
       node: {
+        fatherId: '',
         content: 'Loading',
         author: '',
         timestamp: '',
+        childNodes: [],
       },
       newNode: {
+        desc: '',
         content: '',
+      },
+      page: {
+        current: 1,
+        pageSize: 5,
       },
       styles: {
         controller: {
@@ -39,27 +120,61 @@ export default {
     };
   },
   computed: {
+    childNodesPage() {
+      const start = (this.page.current - 1) * this.page.pageSize;
+      return this.node.childNodes.slice(start, start + this.page.pageSize);
+    },
     ...mapState('layout', ['contentTop']),
   },
   mounted() {
     this.getNode(this.$route.params.node);
   },
+  beforeRouteUpdate(to, from, next) {
+    if (to.name === 'Article') {
+      this.getNode(to.params.node);
+      this.page.current = 1;
+    }
+    next();
+  },
   methods: {
-    getNode(nodeId) {
+    getNode(nodeId, first) {
       node
-        .getNode(nodeId)
+        .getNode({ nodeId, first })
         .then(res => {
           if (res.data.code === 100000) {
-            console.log(res.data);
+            this.node.fatherId = res.data.fatherId || '';
             this.node.content = marked(res.data.content);
-            this.node.author = res.data.authorId;
+            this.node.author = res.data.author || '';
             this.node.timestamp = dayjs(res.data.timestamp).format('YYYY-M-D H:m');
+            this.node.childNodes = res.data.childNodes || [];
+          } else {
+            this.$Message.error({
+              content: node.err(res.data.code),
+            });
           }
         })
         .catch(err => {
           console.log(err);
         });
     },
+    createNode({ fatherId, content, desc }) {
+      node
+        .createNode({ fatherId, content, desc })
+        .then(res => {
+          if (res.data.code === 100000) {
+            this.$Message.success({
+              content: '提交成功, 即将自动跳转',
+            });
+            setTimeout(() => {
+              this.$router.push(`/article/beta/${res.data.nodeId}`);
+            }, 3000);
+          }
+        })
+        .catch(err => {});
+    },
+    submitNewNode() {
+
+    }
   },
   watch: {
     contentTop(oldVal, val) {
@@ -71,6 +186,7 @@ export default {
         style.position = 'absolute';
         style.top = '250px';
       }
+      this.hideController = oldVal < val;
     },
   },
 };
@@ -79,6 +195,7 @@ export default {
 <style lang="scss" scoped>
 $sm: 500px;
 $md: 600px;
+$btn-c: #333333;
 .article-container {
   @media (min-width: 768px) {
     width: $sm;
@@ -87,21 +204,8 @@ $md: 600px;
     width: $md;
   }
   margin: 0 auto;
-  // position: relative;
-  // .node-id {
-  //   position: sticky;
-  //   top: 0;
-  //   background-color: #f7f7f7;
-  //   padding: 1em 0;
-  //   text-align: center;
-  //   font-size: 1em;
-  //   letter-spacing: 0.6em;
-  //   @media (min-width: 768px) {
-  //     letter-spacing: 1em;
-  //     font-size: 1.2em;
-  //   }
-  // }
   .controller {
+    z-index: 999;
     left: 50%;
     $offset: 120px;
     @media (min-width: 768px) {
@@ -110,17 +214,27 @@ $md: 600px;
     @media (min-width: 992px) {
       margin-left: -$md / 2 - $offset;
     }
-    .like-button {
-      padding: 0;
+    @media (max-width: 768px) {
+      position: fixed !important;
+      left: 20px;
+      bottom: 20px;
+      top: initial !important;
+      transition: left 350ms ease-out;
+      &.hide {
+        left: -60px;
+      }
+    }
+    .large-button {
       line-height: 50px;
-      width: 50px;
-      height: 50px;
-      font-size: 20px;
-      text-align: center;
+      font-size: 23px;
     }
     .button {
       display: block;
       margin: 20px auto;
+      &:not([disabled='disabled']) {
+        background-color: #fff;
+        color: $btn-c;
+      }
     }
   }
   .node-content {
@@ -147,6 +261,47 @@ $md: 600px;
     font-size: 1.2em;
     font-style: italic;
     color: #999999;
+    line-height: 1.7;
+  }
+  .node-children {
+    line-height: 1.7;
+    padding: 40px 20px;
+    .title {
+      padding: 20px 0;
+    }
+    .node-child {
+      margin: 1em 0;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    .page {
+      /deep/ .ivu-page-item-active {
+        background-color: #666666;
+      }
+    }
+    .create-button {
+      display: block;
+      margin: 40px auto 20px;
+      color: $btn-c;
+    }
+  }
+  .center {
+    text-align: center;
+  }
+  .node-create {
+    padding: 20px 0;
+    .title {
+      padding: 20px 0;
+    }
+    .buttons {
+      display: flex;
+      .button {
+        flex: 0 0 1;
+        display: block;
+        margin: 0 auto;
+        color: $btn-c;
+      }
+    }
   }
 }
 </style>
