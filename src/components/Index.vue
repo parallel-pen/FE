@@ -6,15 +6,14 @@
   </div>
   <p class="sub-title">与<span class="count">{{ userCount }}</span>名用户一起</p>
   <p class="sub-title">探索剧情发展, 创造新的世界线</p>
-  <router-link to="recent">
-    <div class="button">
-      <Button type="ghost" shape="circle" icon="chevron-right" size="large"></Button>
-    </div>
-  </router-link>
+  <div class="button" @click="handleButtonClick">
+    <Button type="ghost" shape="circle" icon="chevron-right" size="large"></Button>
+  </div>
 </div>
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex';
 export default {
   name: 'Index',
   data() {
@@ -27,6 +26,9 @@ export default {
       defaultTitle: 'Parallel Pen',
       userCount: 112,
     };
+  },
+  computed: {
+    ...mapState('user', ['isLogged']),
   },
   mounted() {
     this.input(this.mainTitle.content);
@@ -62,6 +64,14 @@ export default {
         }, i * 70);
       }
     },
+    handleButtonClick() {
+      if (this.isLogged) {
+        this.$router.push('/recent')
+      } else {
+        this.toggleLoginShow();
+      }
+    },
+    ...mapMutations('layout', ['toggleLoginShow'])
   },
 };
 </script>

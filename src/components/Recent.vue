@@ -59,7 +59,6 @@ export default {
         .userinfo()
         .then(res => {
           if (res.data.code === 100000) {
-            console.log(res.data)
             this.articles[0].id = res.data.recentView.nodeId || '5afea9521816f7208953ddb0';
             this.articles[0].desc = res.data.recentView.desc || '';
           } else {
