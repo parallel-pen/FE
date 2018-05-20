@@ -15,11 +15,11 @@
               {{ article.title }}
             </p>
             <div slot="extra">
-              <span class="date">{{ article.date }}</span>
+              <!-- <span class="date">{{ article.date }}</span> -->
               <Button type="text" icon="android-share-alt" size="small" @click.stop="share(article.id)"></Button>
             </div>
             <p class="content">
-              {{ article.content }}
+              {{ article.desc }}
             </p>
           </Card>
         </div>
@@ -30,6 +30,7 @@
 </template>
 
 <script>
+import user from '@/api/user';
 export default {
   data() {
     return {
@@ -37,11 +38,14 @@ export default {
         {
           id: '5afea9521816f7208953ddb0',
           title: '一夜',
-          date: '2018-5-5',
+          // date: '2018-5-5',
           desc: '',
         },
       ],
     };
+  },
+  mounted() {
+    this.getRecent();
   },
   methods: {
     toArticle(id) {
@@ -49,6 +53,24 @@ export default {
     },
     share(id) {
       alert(`分享功能即将上线`);
+    },
+    getRecent() {
+      user
+        .userinfo()
+        .then(res => {
+          if (res.data.code === 100000) {
+            console.log(res.data)
+            this.articles[0].id = res.data.recentView.nodeId || '5afea9521816f7208953ddb0';
+            this.articles[0].desc = res.data.recentView.desc || '';
+          } else {
+            this.$Message.error({
+              content: user.err(res.data.code),
+            });
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
   },
 };
