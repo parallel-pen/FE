@@ -27,8 +27,8 @@
       icon="arrow-left-c"
       class="button small-button"
       title="返回上一节点"
-      :disabled="!node.fatherId"
-      @click="$router.push(`/article/beta/${node.fatherId}`)"
+      :disabled="!node.fatherNodes.length"
+      @click="$router.push(`/article/beta/${node.fatherNodes[0].nodeId}`)"
     ></Button>
   </div>
   <div class="node-content" v-html="node.content"></div>
@@ -97,15 +97,15 @@ export default {
       hideController: false,
       editing: false,
       node: {
-        fatherId: '',
+        fatherNodes: [],
         content: 'Loading',
         author: '',
         timestamp: '',
         childNodes: [],
       },
       newNode: {
-        desc: '',
         content: '',
+        desc: '',
       },
       page: {
         current: 1,
@@ -142,7 +142,8 @@ export default {
         .getNode({ nodeId, first })
         .then(res => {
           if (res.data.code === 100000) {
-            this.node.fatherId = res.data.fatherId || '';
+            console.log(res.data)
+            this.node.fatherNodes = res.data.fatherNodes || [];
             this.node.content = marked(res.data.content);
             this.node.author = res.data.author || '';
             this.node.timestamp = dayjs(res.data.timestamp).format('YYYY-M-D H:m');
@@ -173,8 +174,11 @@ export default {
         .catch(err => {});
     },
     submitNewNode() {
-
-    }
+      createNode({
+        fatherId: this.fatherNodes[0].nodeId,
+        ...this.newNode,
+      });
+    },
   },
   watch: {
     contentTop(oldVal, val) {

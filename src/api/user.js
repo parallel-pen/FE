@@ -14,6 +14,9 @@ export default {
       password,
     });
   },
+  userinfo() {
+    return fetch.get('/userinfo');
+  },
   err(code) {
     switch (code) {
       case 200001:
