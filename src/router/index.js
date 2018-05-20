@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-// import store from '@/store';
+import store from '@/store';
 import Index from '@/components/Index';
 import Recent from '@/components/Recent';
 import Article from '@/components/Article';
@@ -15,15 +15,6 @@ const router = new Router({
       path: '/',
       name: 'Index',
       component: Index,
-      // beforeEnter: (to, from, next) => {
-      //   if (store.state.user.isLogged) {
-      //     next({
-      //       path: '/recent',
-      //     });
-      //   } else {
-      //     next();
-      //   }
-      // },
     },
     {
       path: '/recent',
@@ -37,6 +28,10 @@ const router = new Router({
       component: Article,
       meta: { requiresAuth: true },
     },
+    {
+      path: '*',
+      redirect: '/',
+    },
   ],
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {
@@ -44,6 +39,22 @@ const router = new Router({
     }
     return { x: 0, y: 0 };
   },
+});
+
+router.beforeEach((to, from, next) => {
+  if (to.meta.requiresAuth) {
+    console.log(store.state.user);
+    if (store.state.user.isLogged) {
+      next();
+    } else {
+      next({
+        path: '/',
+        query: { redirect: to.fullPath }, // 将跳转的路由path作为参数，登录成功后跳转到该路由
+      });
+    }
+  } else {
+    next();
+  }
 });
 
 export default router;

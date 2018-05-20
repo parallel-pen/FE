@@ -173,12 +173,15 @@ export default {
                 if (res.data.code === 100000) {
                   this.toggleLoginShow();
                   this.$Message.success({
-                    content: '注册成功, 如遇问题请刷新',
+                    content: '注册成功',
                   });
                   this.saveUser({
                     account,
                     token: res.data.token,
                   });
+                  setTimeout(() => {
+                    location.reload();
+                  }, 1100);
                 } else {
                   this.$Message.error({
                     content: userApi.err(res.data.code),
@@ -199,12 +202,15 @@ export default {
                 if (res.data.code === 100000) {
                   this.toggleLoginShow();
                   this.$Message.success({
-                    content: '登录成功, 如遇问题请刷新',
+                    content: '登录成功',
                   });
                   this.saveUser({
                     account,
                     token: res.data.token,
                   });
+                  setTimeout(() => {
+                    location.reload();
+                  }, 1100);
                 } else {
                   this.$Message.error({
                     content: userApi.err(res.data.code),
