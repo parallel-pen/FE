@@ -1,10 +1,9 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import store from '@/store';
+import Cookies from 'js-cookie';
 import Index from '@/components/Index';
 import Recent from '@/components/Recent';
 import Article from '@/components/Article';
-// import Login from '@/components/Login';
 
 Vue.use(Router);
 
@@ -43,7 +42,7 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   if (to.meta.requiresAuth) {
-    if (store.state.user.isLogged) {
+    if (Cookies.get('account') && Cookies.get('token')) {
       next();
     } else {
       next({
