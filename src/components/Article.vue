@@ -230,15 +230,22 @@ export default {
             setTimeout(() => {
               this.$router.push(`/article/beta/${res.data.nodeId}`);
             }, 3000);
+          } else {
+            this.$Message.error({
+              content: node.err(res.data.code),
+            })
           }
         })
-        .catch(err => {});
+        .catch(err => {
+          console.log(err);
+        });
     },
     submitNewNode() {
+      const fatherId = this.$route.params.node;
       this.$refs['newNode'].validate(valid => {
         if (valid) {
           this.createNode({
-            fatherId: this.$router.params.id,
+            fatherId,
             ...this.newNode,
           });
         }
