@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
-const baseURL = 'http://api.parallelpen.top';
+const baseURL = 'https://api.parallelpen.top';
 
 const fetch = axios.create({
   baseURL,
