@@ -41,6 +41,7 @@
 
 <script>
 import { mapState, mapMutations } from 'vuex';
+import user from '@/api/user';
 import Login from '@/components/Login';
 export default {
   name: 'App',
@@ -68,7 +69,18 @@ export default {
     };
   },
   created() {
-    this.checkUser();
+    if (this.checkUser()) {
+      user
+        .userinfo()
+        .then(res => {
+          if (res.data.code === 100000) {
+          }
+        })
+        .catch(err => {
+          this.logoutUser();
+          this.$router.push('/');
+        });
+    }
   },
   mounted() {
     this.updateHeaderHeight();
@@ -93,6 +105,7 @@ export default {
           break;
         case 'logout':
           this.logoutUser();
+          this.$router.push('/');
           break;
         default:
           break;
