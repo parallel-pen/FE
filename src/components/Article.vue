@@ -199,9 +199,6 @@ export default {
       this.page.current = 1;
       this.editing = false;
     },
-    validate(name, callback) {
-      this.$refs[name].validate(callback);
-    },
     getNode(nodeId, first) {
       node
         .getNode({ nodeId, first })
@@ -238,7 +235,7 @@ export default {
         .catch(err => {});
     },
     submitNewNode() {
-      this.validate('newNode', valid => {
+      this.$refs['newNode'].validate(valid => {
         if (valid) {
           this.createNode({
             fatherId: this.$router.params.id,
