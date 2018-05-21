@@ -31,6 +31,7 @@
 
 <script>
 import user from '@/api/user';
+import node from '@/api/node';
 export default {
   data() {
     return {
@@ -42,6 +43,7 @@ export default {
           desc: '',
         },
       ],
+      first: {},
     };
   },
   mounted() {
@@ -59,8 +61,24 @@ export default {
         .userinfo()
         .then(res => {
           if (res.data.code === 100000) {
-            this.articles[0].id = res.data.recentView.nodeId || '5afea9521816f7208953ddb0';
-            this.articles[0].desc = res.data.recentView.desc || '';
+            if (!res.data.recentView) {
+              node
+                .getNode('', '1')
+                .then(res => {
+                  if (res.data.code === 100000) {
+                    this.articles[0].id = res.data.nodeId;
+                    this.articles[0].desc = res.data.desc || '';
+                  } else {
+                    res.err(res.data.code);
+                  }
+                })
+                .catch(err => {
+                  console.log(err);
+                });
+            } else {
+              this.articles[0].id = res.data.recentView.nodeId;
+              this.articles[0].desc = res.data.recentView.desc || '';
+            }
           } else {
             this.$Message.error({
               content: user.err(res.data.code),
