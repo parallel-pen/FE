@@ -43,7 +43,6 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   if (to.meta.requiresAuth) {
-    console.log(store.state.user);
     if (store.state.user.isLogged) {
       next();
     } else {
