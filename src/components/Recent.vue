@@ -63,7 +63,7 @@ export default {
           if (res.data.code === 100000) {
             if (!res.data.recentView.nodeId) {
               node
-                .getNode('', '1')
+                .getNode({ nodeId: '', first: '1' })
                 .then(res => {
                   if (res.data.code === 100000) {
                     this.articles[0].id = res.data.nodeId;
