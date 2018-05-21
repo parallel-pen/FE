@@ -61,7 +61,7 @@ export default {
         .userinfo()
         .then(res => {
           if (res.data.code === 100000) {
-            if (!res.data.recentView) {
+            if (!res.data.recentView.nodeId) {
               node
                 .getNode('', '1')
                 .then(res => {
