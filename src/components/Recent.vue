@@ -37,7 +37,7 @@ export default {
     return {
       articles: [
         {
-          id: '5afea9521816f7208953ddb0',
+          id: '',
           title: '一夜',
           // date: '2018-5-5',
           desc: '',
@@ -51,7 +51,9 @@ export default {
   },
   methods: {
     toArticle(id) {
-      this.$router.push(`article/beta/${id}`);
+      if (id) {
+        this.$router.push(`article/beta/${id}`);
+      }
     },
     share(id) {
       alert(`分享功能即将上线`);
