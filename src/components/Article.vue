@@ -164,7 +164,7 @@ export default {
           {
             min: 10,
             max: 100,
-            message: '字数限制为 100 到 4000',
+            message: '字数限制为 10 到 100',
             trigger: 'blur',
           },
         ],
@@ -241,7 +241,7 @@ export default {
       this.validate('newNode', valid => {
         if (valid) {
           this.createNode({
-            fatherId: this.node.fatherNodes[0].nodeId,
+            fatherId: this.$router.params.id,
             ...this.newNode,
           });
         }

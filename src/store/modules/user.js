@@ -6,9 +6,10 @@ const mutations = {
     if (account) {
       state.isLogged = true;
       state.account = account;
-    } else {
-      state.isLogged = false;
+      return true;
     }
+    state.isLogged = false;
+    return false;
   },
   save(state, { account, token }) {
     state.isLogged = true;
@@ -24,9 +25,7 @@ const mutations = {
   },
 };
 
-const actions = {
-
-};
+const actions = {};
 
 const state = {
   isLogged: false,
